@@ -44,6 +44,25 @@ Public Class LogMeIn
         CreateWatchers()
     End Sub
 
+    Sub Logout()
+        SendMessage("DeleteFiles")
+
+        Dim Files As New List(Of String)
+
+        For Each Directory In Options.Paths
+            For Each File In IO.Directory.GetFiles(Directory.Value)
+                Files.Add(File)
+            Next
+        Next
+        For i As Integer = 0 To Files.Count - 1
+            For Each P As KeyValuePair(Of String, String) In Options.Paths
+                Files(i) = Files(i).Replace(P.Value, P.Key)
+            Next
+        Next
+
+        SendMessage(Serialization.Serialize(Files))
+    End Sub
+
     Sub CreateWatchers()
         For Each P As KeyValuePair(Of String, String) In Options.Paths
             Dim Watcher As New FileSystemWatcher()
